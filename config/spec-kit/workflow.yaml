@@ -1,0 +1,58 @@
+# Spec Kit Workflow Configuration
+# Project: studyabroad-v2
+
+workflow:
+  name: ${PROJECT_NAME}-workflow
+
+phases:
+  - name: specify
+    command: /speckit.specify
+    agent: requirements
+    outputs:
+      - .specify/spec.md
+      - docs/requirements/
+    gate:
+      - requirements_documented
+      - acceptance_criteria_defined
+      - user_journeys_mapped
+
+  - name: plan
+    command: /speckit.plan
+    agent: architecture
+    inputs:
+      - .specify/spec.md
+    outputs:
+      - docs/architecture/
+      - docs/architecture/adrs/
+    gate:
+      - architecture_documented
+      - adrs_written
+      - database_schema_defined
+
+  - name: tasks
+    command: /speckit.tasks
+    agent: orchestrator
+    inputs:
+      - .specify/spec.md
+      - docs/architecture/
+    outputs:
+      - .sdlc/tasks.json
+    gate:
+      - tasks_decomposed
+      - dependencies_mapped
+
+  - name: implement
+    command: /speckit.implement
+    agents:
+      - developer
+      - test-manager
+    gate:
+      - code_complete
+      - tests_passing
+      - coverage_met
+
+templates:
+  requirement: .specify/templates/requirement.md
+  story: .specify/templates/story.md
+  adr: .specify/templates/adr.md
+
