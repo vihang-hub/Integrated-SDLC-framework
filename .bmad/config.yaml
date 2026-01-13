@@ -1,0 +1,13 @@
+# BMAD Configuration for studyabroad-v2
+
+project:
+  name: studyabroad-v2
+  type: web-application
+  domain: education
+
+integration:
+  spec_kit: true
+  superpowers: true
+  ralph: true
+  twelve_factors: true
+

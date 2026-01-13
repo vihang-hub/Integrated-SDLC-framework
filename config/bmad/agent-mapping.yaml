@@ -1,0 +1,89 @@
+# Mapping: Your 10 Agents <-> BMAD 19 Agents
+# Project: studyabroad-v2
+
+agent_mapping:
+  orchestrator:
+    bmad_agents:
+      - orchestrator
+      - scrum-master
+    responsibilities:
+      - workflow_management
+      - task_coordination
+      - gate_validation
+
+  requirements:
+    bmad_agents:
+      - analyst
+      - product-manager
+    responsibilities:
+      - requirements_elicitation
+      - user_story_writing
+      - acceptance_criteria
+
+  architecture:
+    bmad_agents:
+      - architect
+    responsibilities:
+      - system_design
+      - technology_selection
+      - adr_writing
+
+  design:
+    bmad_agents:
+      - designer
+      - ux-designer
+    responsibilities:
+      - ui_design
+      - api_contracts
+      - wireframing
+
+  test-manager:
+    bmad_agents:
+      - qa-tester
+    responsibilities:
+      - test_strategy
+      - test_case_design
+      - coverage_analysis
+
+  developer:
+    bmad_agents:
+      - developer
+      - frontend-developer
+      - backend-developer
+    responsibilities:
+      - code_implementation
+      - unit_testing
+      - code_review
+
+  security:
+    bmad_agents:
+      - security-expert
+    responsibilities:
+      - security_review
+      - threat_modeling
+      - compliance_checking
+
+  devops:
+    bmad_agents:
+      - devops
+      - database-admin
+    responsibilities:
+      - ci_cd_pipeline
+      - infrastructure
+      - deployment
+
+  documentation:
+    bmad_agents:
+      - technical-writer
+    responsibilities:
+      - api_docs
+      - user_guides
+      - runbooks
+
+  operations:
+    bmad_agents: []
+    responsibilities:
+      - monitoring
+      - incident_response
+      - performance_analysis
+
