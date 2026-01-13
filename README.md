@@ -41,7 +41,7 @@ graph TB
         end
 
         subgraph "Agent Layer"
-            ORCH[Orchestrator Agent]
+            ORCH[Orchestrator Agent<br/>8 skills + 2 BMAD personas]
             REQ[Requirements Agent]
             ARCH[Architecture Agent]
             DES[Design Agent]
@@ -74,12 +74,17 @@ graph TB
         ORCH --> DOC
         ORCH --> MON
 
+        BMAD -.-> ORCH
         BMAD -.-> REQ
         BMAD -.-> ARCH
         BMAD -.-> DES
         BMAD -.-> TEST
         BMAD -.-> DEV
+        BMAD -.-> SEC
+        BMAD -.-> OPS
+        BMAD -.-> DOC
 
+        SKILLS -.-> ORCH
         SKILLS -.-> REQ
         SKILLS -.-> ARCH
         SKILLS -.-> DES
@@ -91,7 +96,18 @@ graph TB
         SKILLS -.-> MON
 
         RALPH -.-> ORCH
+        RALPH -.-> REQ
+        RALPH -.-> ARCH
+        RALPH -.-> DEV
+        RALPH -.-> TEST
+        RALPH -.-> SEC
+        RALPH -.-> OPS
+        RALPH -.-> DOC
+        RALPH -.-> MON
+
+        SPECKIT -.-> ORCH
         SPECKIT -.-> REQ
+        SPECKIT -.-> ARCH
     end
 
     style ORCH fill:#e1f5fe
