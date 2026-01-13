@@ -1,0 +1,43 @@
+# Obra Superpowers Configuration
+# Project: studyabroad-v2
+
+superpowers:
+  enabled:
+    # Core Development
+    - tdd
+    - code-review
+    - systematic-debugging
+
+    # Planning
+    - brainstorming
+    - write-plan
+    - execute-plan
+
+    # Quality
+    - verification-before-completion
+    - testing-anti-patterns
+
+  custom_skills:
+    - name: gdpr-compliance-check
+      description: Verify GDPR compliance for data handling
+      trigger: changes_to_user_data
+
+    - name: external-api-integration
+      description: Pattern for integrating external APIs
+      trigger: new_api_integration
+
+    - name: user-journey-validation
+      description: Validate feature against user journey stages
+      trigger: feature_completion
+
+tdd_config:
+  coverage_target: 80
+  require_tests_first: true
+
+code_review_config:
+  require_approval: true
+  security_review_for:
+    - auth/
+    - user/
+    - payment/
+
