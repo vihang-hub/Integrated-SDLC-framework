@@ -1,7 +1,20 @@
-# studyabroad-v2
+# Integrated SDLC Framework
 
 ## Project Overview
-[TODO: Add project description]
+A 10-agent SDLC framework with 116 skills for AI-assisted software development.
+
+## Critical Rules
+
+### Documentation Sync (MANDATORY)
+**Whenever ANY change is made to this project, ALL related files must be updated including:**
+- `README.md` - If architecture, workflow, or usage changes
+- `agents/*/agent.yaml` - If skills or BMAD personas change
+- `config/` files - If framework configuration changes
+- `.bmad/config.yaml` - If BMAD integration changes
+- `setup-sdlc-framework.sh` - If setup process changes
+- Mermaid diagrams in README - If relationships between components change
+
+**Never make a partial change. Always update all affected files in the same commit.**
 
 ## Tech Stack
 - Frontend: React + TypeScript
