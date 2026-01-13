@@ -1,16 +1,43 @@
-# Devops Agent Definition
+# DevOps Agent Definition
 agent:
   id: devops
-  name: Devops Agent
-  project: ${PROJECT_NAME}
+  name: DevOps Agent
+  project: studyabroad-v2
+
+description: |
+  Manages CI/CD pipelines, infrastructure, deployment, and operational
+  tooling for the StudyAbroad platform.
+
+responsibilities:
+  - ci_cd_pipeline
+  - infrastructure
+  - deployment
+  - containerization
+  - monitoring_setup
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - devops
+      - database-admin
   ralph:
-    use_cases: []
+    use_cases:
+      - pipeline-setup
+      - deployment
+    completion_promise: PIPELINE_WORKING
   superpowers:
-    skills: []
-
-# See implementation guide for full configuration
-
+    skills:
+      - devops/cicd-pipeline
+      - devops/containerization
+      - devops/infrastructure-as-code
+      - devops/deployment-strategy
+      - devops/environment-configuration
+      - devops/database-operations
+      - devops/monitoring-setup
+      - devops/log-management
+      - devops/auto-scaling
+      - devops/load-balancing
+      - devops/ssl-management
+      - devops/backup-recovery
+      - devops/performance-tuning
+      - devops/cost-optimization

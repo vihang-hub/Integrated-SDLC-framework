@@ -2,15 +2,43 @@
 agent:
   id: requirements
   name: Requirements Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Handles requirements elicitation, documentation, and management for the
+  StudyAbroad platform, ensuring clear acceptance criteria and traceability.
+
+responsibilities:
+  - requirements_elicitation
+  - user_story_writing
+  - acceptance_criteria
+  - prioritization
+  - traceability
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - analyst
+      - product-manager
   ralph:
-    use_cases: []
+    use_cases:
+      - requirements-gathering
+      - spec-writing
+    completion_promise: REQUIREMENTS_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - requirements/elicitation
+      - requirements/user-stories
+      - requirements/classification
+      - requirements/ambiguity-detection
+      - requirements/prioritization
+      - requirements/dependency-mapping
+      - requirements/change-impact
+      - requirements/traceability
+      - requirements/acceptance-criteria
+      - requirements/nfr-quantification
 
-# See implementation guide for full configuration
-
+cross_cutting_collaborations:
+  - skill: requirements/change-impact
+    collaborators: [test-manager, developer]
+    reason: Impact analysis affects test planning and development estimates

@@ -2,15 +2,42 @@
 agent:
   id: documentation
   name: Documentation Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Creates and maintains all documentation including API docs, user guides,
+  runbooks, and architectural documentation for the StudyAbroad platform.
+
+responsibilities:
+  - api_docs
+  - user_guides
+  - runbooks
+  - architecture_docs
+  - onboarding_docs
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - technical-writer
   ralph:
-    use_cases: []
+    use_cases:
+      - documentation-generation
+      - api-doc-update
+    completion_promise: DOCS_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - documentation/technical-writing
+      - documentation/api-documentation
+      - documentation/code-documentation
+      - documentation/user-guides
+      - documentation/architecture-documentation
+      - documentation/runbook-writing
+      - documentation/changelog-management
+      - documentation/onboarding-documentation
+      - documentation/compliance-documentation
+      - documentation/diagram-creation
 
-# See implementation guide for full configuration
-
+cross_cutting_collaborations:
+  - skill: documentation/api-documentation
+    collaborators: [developer, design]
+    reason: API implementation and OpenAPI spec changes require doc updates

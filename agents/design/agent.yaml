@@ -2,15 +2,38 @@
 agent:
   id: design
   name: Design Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Handles UI/UX design, API contracts, component design, and data flow
+  for the StudyAbroad platform's frontend and integration points.
+
+responsibilities:
+  - ui_design
+  - api_contracts
+  - wireframing
+  - component_design
+  - state_management
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - designer
+      - ux-designer
   ralph:
-    use_cases: []
+    use_cases:
+      - ui-design
+      - api-contract-design
+    completion_promise: DESIGN_COMPLETE
   superpowers:
-    skills: []
-
-# See implementation guide for full configuration
-
+    skills:
+      - design/module-design
+      - design/api-contracts
+      - design/ui-ux
+      - design/components
+      - design/data-flow
+      - design/error-handling
+      - design/state-management
+      - design/integration-design
+      - design/validation
+      - design/wireframing

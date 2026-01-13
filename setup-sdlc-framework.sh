@@ -593,106 +593,129 @@ phase_4_bmad() {
 
     cd "$PROJECT_DIR"
 
-    if prompt_yes_no "Install BMAD Method? (requires npm)"; then
-        print_info "Installing BMAD Method..."
-        run_or_dry npx bmad-method install || print_warning "BMAD installation may have failed"
+    print_step "Installing BMAD Method..."
+
+    # Install BMAD to .bmad-core directory, configured for Claude Code
+    if [[ "$DRY_RUN" == true ]]; then
+        echo -e "${BLUE}[DRY RUN] Would execute: npx bmad-method install --full --directory .bmad-core --ide claude-code${NC}"
     else
-        print_info "Skipping BMAD installation - creating manual config..."
+        if npx bmad-method install --full --directory .bmad-core --ide claude-code; then
+            print_success "BMAD Method installed to .bmad-core/"
+        else
+            print_warning "BMAD installation failed - creating manual structure..."
+            # Create minimal BMAD structure if install fails
+            mkdir -p .bmad-core/agents
+            mkdir -p .bmad-core/templates
+            mkdir -p .bmad-core/workflows
+        fi
     fi
 
-    # Create BMAD agent mapping
+    # Create BMAD agent mapping with file references
     print_step "Creating BMAD agent mapping..."
-    create_file "config/bmad/agent-mapping.yaml" "# Mapping: Your 10 Agents <-> BMAD 19 Agents
+    create_file "config/bmad/agent-mapping.yaml" "# Mapping: Your 10 Agents <-> BMAD Agents
 # Project: ${PROJECT_NAME}
+# BMAD Installation: .bmad-core/
+
+bmad_root: .bmad-core
 
 agent_mapping:
   orchestrator:
-    bmad_agents:
-      - orchestrator
-      - scrum-master
+    bmad_personas:
+      - name: bmad-orchestrator
+        file: .bmad-core/agents/bmad-orchestrator.md
+      - name: sm
+        file: .bmad-core/agents/sm.md
     responsibilities:
       - workflow_management
       - task_coordination
       - gate_validation
 
   requirements:
-    bmad_agents:
-      - analyst
-      - product-manager
+    bmad_personas:
+      - name: analyst
+        file: .bmad-core/agents/analyst.md
+      - name: pm
+        file: .bmad-core/agents/pm.md
     responsibilities:
       - requirements_elicitation
       - user_story_writing
       - acceptance_criteria
 
   architecture:
-    bmad_agents:
-      - architect
+    bmad_personas:
+      - name: architect
+        file: .bmad-core/agents/architect.md
     responsibilities:
       - system_design
       - technology_selection
       - adr_writing
 
   design:
-    bmad_agents:
-      - designer
-      - ux-designer
+    bmad_personas:
+      - name: ux-expert
+        file: .bmad-core/agents/ux-expert.md
     responsibilities:
       - ui_design
       - api_contracts
       - wireframing
 
   test-manager:
-    bmad_agents:
-      - qa-tester
+    bmad_personas:
+      - name: qa
+        file: .bmad-core/agents/qa.md
     responsibilities:
       - test_strategy
       - test_case_design
       - coverage_analysis
 
   developer:
-    bmad_agents:
-      - developer
-      - frontend-developer
-      - backend-developer
+    bmad_personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
     responsibilities:
       - code_implementation
       - unit_testing
       - code_review
 
   security:
-    bmad_agents:
-      - security-expert
+    bmad_personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
+        focus: security
     responsibilities:
       - security_review
       - threat_modeling
       - compliance_checking
 
   devops:
-    bmad_agents:
-      - devops
-      - database-admin
+    bmad_personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
+        focus: infrastructure
     responsibilities:
       - ci_cd_pipeline
       - infrastructure
       - deployment
 
   documentation:
-    bmad_agents:
-      - technical-writer
+    bmad_personas:
+      - name: analyst
+        file: .bmad-core/agents/analyst.md
+        focus: documentation
     responsibilities:
       - api_docs
       - user_guides
       - runbooks
 
   operations:
-    bmad_agents: []
+    bmad_personas: []
     responsibilities:
       - monitoring
       - incident_response
       - performance_analysis
 "
 
-    # Create BMAD config
+    # Create BMAD config with proper integration
     print_step "Creating BMAD configuration..."
     create_file ".bmad/config.yaml" "# BMAD Configuration for ${PROJECT_NAME}
 
@@ -701,23 +724,56 @@ project:
   type: web-application
   domain: education
 
+bmad:
+  version: 4.44.3
+  installation_dir: .bmad-core
+  ide: claude-code
+
 integration:
   spec_kit: true
   superpowers: true
   ralph: true
   twelve_factors: true
+
+# Agent persona locations
+personas:
+  analyst: .bmad-core/agents/analyst.md
+  architect: .bmad-core/agents/architect.md
+  dev: .bmad-core/agents/dev.md
+  pm: .bmad-core/agents/pm.md
+  po: .bmad-core/agents/po.md
+  qa: .bmad-core/agents/qa.md
+  sm: .bmad-core/agents/sm.md
+  ux-expert: .bmad-core/agents/ux-expert.md
+  bmad-master: .bmad-core/agents/bmad-master.md
+  bmad-orchestrator: .bmad-core/agents/bmad-orchestrator.md
+
+# Templates
+templates:
+  story: .bmad-core/templates/story-tmpl.yaml
+  project_brief: .bmad-core/templates/project-brief-tmpl.yaml
+  prd: .bmad-core/templates/prd-tmpl.yaml
+  epic: .bmad-core/templates/epic-tmpl.yaml
+
+# Checklists
+checklists:
+  architect: .bmad-core/checklists/architect-checklist.md
+  pm: .bmad-core/checklists/pm-checklist.md
+  po: .bmad-core/checklists/po-master-checklist.md
+  story_dod: .bmad-core/checklists/story-dod-checklist.md
+  change: .bmad-core/checklists/change-checklist.md
 "
 
     if [[ "$DRY_RUN" != true ]]; then
         git add -A
-        git commit -m "feat: configure BMAD method with agent mapping for ${PROJECT_NAME}" || true
+        git commit -m "feat: install and configure BMAD method for ${PROJECT_NAME}" || true
     fi
 
     print_success "Phase 4 complete!"
 }
 
 phase_5_ralph() {
-    print_phase 5 "Ralph Wiggum Plugin Installation"
+    print_phase 5 "Ralph Wiggum Configuration"
 
     cd "$PROJECT_DIR"
 
@@ -737,22 +793,7 @@ phase_5_ralph() {
         fi
     fi
 
-    # Manual step: Install Ralph plugin in Claude Code
-    prompt_manual_step "Install Ralph Wiggum Plugin" "
-${BOLD}In Claude Code, run the following command:${NC}
-
-    /plugin install ralph-wiggum@claude-plugins-official
-
-${BOLD}Then verify installation by running:${NC}
-
-    /help
-
-${BOLD}You should see these commands available:${NC}
-    - /ralph-loop
-    - /cancel-ralph
-
-${YELLOW}Note: You may need to restart Claude Code after installation.${NC}
-"
+    print_info "Plugin installation will be prompted at the end of setup (Phase 12)"
 
     # Create Ralph configuration
     print_step "Creating Ralph configuration..."
@@ -1019,32 +1060,498 @@ phase_7_agents() {
 
     print_step "Creating agent definition files..."
 
-    # Create agent definitions (abbreviated for script size)
+    # Create agent directories first
     local agents=("orchestrator" "requirements" "architecture" "design" "test-manager" "developer" "security" "devops" "documentation" "operations")
 
     for agent in "${agents[@]}"; do
-        # Capitalize first letter (portable)
-        first_char=$(echo "$agent" | cut -c1 | tr '[:lower:]' '[:upper:]')
-        rest_chars=$(echo "$agent" | cut -c2-)
-        agent_capitalized="${first_char}${rest_chars}"
+        run_or_dry mkdir -p "agents/${agent}"
+    done
 
-        create_file "agents/${agent}/agent.yaml" "# ${agent_capitalized} Agent Definition
+    # Create fully wired agent definitions with skills and BMAD persona references
+    create_file "agents/orchestrator/agent.yaml" "# Orchestrator Agent Definition
 agent:
-  id: ${agent}
-  name: ${agent_capitalized} Agent
-  project: \${PROJECT_NAME}
+  id: orchestrator
+  name: Orchestrator Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Coordinates the complete SDLC workflow across all 10 agents, managing phase
+  transitions, enforcing gate validations, and ensuring smooth project progression.
+
+responsibilities:
+  - workflow_management
+  - task_coordination
+  - gate_validation
+  - conflict_resolution
+  - priority_management
 
 frameworks:
   bmad:
-    agents: []
+    personas:
+      - name: bmad-orchestrator
+        file: .bmad-core/agents/bmad-orchestrator.md
+      - name: sm
+        file: .bmad-core/agents/sm.md
   ralph:
-    use_cases: []
+    use_cases:
+      - workflow-coordination
+      - gate-validation
+    completion_promise: COORDINATION_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - orchestration/workflow-management
+      - orchestration/task-decomposition
+      - orchestration/progress-tracking
+      - orchestration/gate-validation
+      - orchestration/conflict-resolution
+      - orchestration/priority-management
+      - orchestration/communication-routing
+      - orchestration/risk-assessment
 
-# See implementation guide for full configuration
+delegation:
+  requirements: requirements-agent
+  architecture: architecture-agent
+  design: design-agent
+  test_design: test-manager-agent
+  implementation: developer-agent
+  testing: test-manager-agent
+  security: security-agent
+  deployment: devops-agent
+  documentation: documentation-agent
+  operations: operations-agent
 "
-    done
+
+    create_file "agents/requirements/agent.yaml" "# Requirements Agent Definition
+agent:
+  id: requirements
+  name: Requirements Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Handles requirements elicitation, documentation, and management,
+  ensuring clear acceptance criteria and traceability.
+
+responsibilities:
+  - requirements_elicitation
+  - user_story_writing
+  - acceptance_criteria
+  - prioritization
+  - traceability
+
+frameworks:
+  bmad:
+    personas:
+      - name: analyst
+        file: .bmad-core/agents/analyst.md
+      - name: pm
+        file: .bmad-core/agents/pm.md
+  ralph:
+    use_cases:
+      - requirements-gathering
+      - spec-writing
+    completion_promise: REQUIREMENTS_COMPLETE
+  superpowers:
+    skills:
+      - requirements/elicitation
+      - requirements/user-stories
+      - requirements/classification
+      - requirements/ambiguity-detection
+      - requirements/prioritization
+      - requirements/dependency-mapping
+      - requirements/change-impact
+      - requirements/traceability
+      - requirements/acceptance-criteria
+      - requirements/nfr-quantification
+
+cross_cutting_collaborations:
+  - skill: requirements/change-impact
+    collaborators: [test-manager, developer]
+    reason: Impact analysis affects test planning and development estimates
+"
+
+    create_file "agents/architecture/agent.yaml" "# Architecture Agent Definition
+agent:
+  id: architecture
+  name: Architecture Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Designs system architecture, makes technology decisions, and documents
+  architectural decisions through ADRs.
+
+responsibilities:
+  - system_design
+  - technology_selection
+  - adr_writing
+  - database_design
+  - api_architecture
+
+frameworks:
+  bmad:
+    personas:
+      - name: architect
+        file: .bmad-core/agents/architect.md
+  ralph:
+    use_cases:
+      - architecture-design
+      - technology-evaluation
+    completion_promise: ARCHITECTURE_COMPLETE
+  superpowers:
+    skills:
+      - architecture/architecture-pattern-selection
+      - architecture/technology-evaluation
+      - architecture/database-design
+      - architecture/api-architecture
+      - architecture/infrastructure-design
+      - architecture/security-architecture
+      - architecture/scalability-planning
+      - architecture/integration-architecture
+      - architecture/cost-estimation
+      - architecture/adr-writing
+      - architecture/diagram-generation
+      - architecture/environment-design
+
+cross_cutting_collaborations:
+  - skill: architecture/adr-writing
+    collaborators: [developer, security]
+    reason: Implementation and security decisions need formal ADR documentation
+"
+
+    create_file "agents/design/agent.yaml" "# Design Agent Definition
+agent:
+  id: design
+  name: Design Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Handles UI/UX design, API contracts, component design, and data flow
+  for frontend and integration points.
+
+responsibilities:
+  - ui_design
+  - api_contracts
+  - wireframing
+  - component_design
+  - state_management
+
+frameworks:
+  bmad:
+    personas:
+      - name: ux-expert
+        file: .bmad-core/agents/ux-expert.md
+  ralph:
+    use_cases:
+      - ui-design
+      - api-contract-design
+    completion_promise: DESIGN_COMPLETE
+  superpowers:
+    skills:
+      - design/module-design
+      - design/api-contracts
+      - design/ui-ux
+      - design/components
+      - design/data-flow
+      - design/error-handling
+      - design/state-management
+      - design/integration-design
+      - design/validation
+      - design/wireframing
+"
+
+    create_file "agents/test-manager/agent.yaml" "# Test Manager Agent Definition
+agent:
+  id: test-manager
+  name: Test Manager Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Manages test strategy, test case design, coverage analysis, and quality
+  assurance.
+
+responsibilities:
+  - test_strategy
+  - test_case_design
+  - coverage_analysis
+  - defect_analysis
+  - regression_management
+
+frameworks:
+  bmad:
+    personas:
+      - name: qa
+        file: .bmad-core/agents/qa.md
+  ralph:
+    use_cases:
+      - test-design
+      - coverage-analysis
+    completion_promise: TESTS_COMPLETE
+  superpowers:
+    skills:
+      - testing/test-strategy
+      - testing/test-case-design
+      - testing/test-data
+      - testing/coverage-analysis
+      - testing/traceability-management
+      - testing/impact-analysis
+      - testing/prioritization
+      - testing/defect-analysis
+      - testing/reporting
+      - testing/regression-management
+      - testing/environment-management
+      - testing/performance-test
+      - testing/security-test
+
+cross_cutting_collaborations:
+  - skill: testing/traceability-management
+    collaborators: [requirements]
+    reason: Verify requirement coverage and update traceability matrix
+  - skill: testing/impact-analysis
+    collaborators: [requirements, developer]
+    reason: Assess test impacts from requirement or code changes
+"
+
+    create_file "agents/developer/agent.yaml" "# Developer Agent Definition
+agent:
+  id: developer
+  name: Developer Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Implements features, writes tests, performs code reviews, and handles
+  all development tasks.
+
+responsibilities:
+  - code_implementation
+  - unit_testing
+  - code_review
+  - bug_fixing
+  - refactoring
+
+frameworks:
+  bmad:
+    personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
+  ralph:
+    use_cases:
+      - tdd-implementation
+      - bug-fix
+      - feature-development
+    completion_promise: IMPLEMENTATION_COMPLETE
+  superpowers:
+    skills:
+      - development/code-implementation
+      - development/unit-testing
+      - development/api-implementation
+      - development/database-integration
+      - development/frontend-development
+      - development/authentication
+      - development/integration-implementation
+      - development/error-handling
+      - development/refactoring
+      - development/bug-fixing
+      - development/code-review
+      - development/code-documentation
+      - development/migration-writing
+      - development/performance-optimization
+
+cross_cutting_collaborations:
+  - skill: development/code-review
+    collaborators: [security, architecture]
+    reason: Security and architectural compliance reviews
+  - skill: development/code-documentation
+    collaborators: [documentation]
+    reason: Generate API docs from code comments
+"
+
+    create_file "agents/security/agent.yaml" "# Security Agent Definition
+agent:
+  id: security
+  name: Security Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Ensures security compliance, performs threat modeling, vulnerability scanning,
+  and security reviews (GDPR, FERPA aware).
+
+responsibilities:
+  - security_review
+  - threat_modeling
+  - compliance_checking
+  - vulnerability_scanning
+  - incident_analysis
+
+frameworks:
+  bmad:
+    personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
+        focus: security
+  ralph:
+    use_cases:
+      - security-audit
+      - threat-modeling
+    completion_promise: SECURITY_CLEAN
+  superpowers:
+    skills:
+      - security/security-architecture-review
+      - security/threat-modeling
+      - security/vulnerability-scanning
+      - security/dependency-auditing
+      - security/code-security-review
+      - security/authentication-testing
+      - security/authorization-testing
+      - security/input-validation-testing
+      - security/security-configuration
+      - security/compliance-checking
+      - security/penetration-testing
+      - security/security-reporting
+      - security/incident-analysis
+
+cross_cutting_collaborations:
+  - skill: security/code-security-review
+    collaborators: [developer]
+    reason: Security guidance during auth/data handling implementation
+
+compliance:
+  - GDPR
+  - FERPA
+  - OWASP-Top-10
+"
+
+    create_file "agents/devops/agent.yaml" "# DevOps Agent Definition
+agent:
+  id: devops
+  name: DevOps Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Manages CI/CD pipelines, infrastructure, deployment, and operational tooling.
+
+responsibilities:
+  - ci_cd_pipeline
+  - infrastructure
+  - deployment
+  - containerization
+  - monitoring_setup
+
+frameworks:
+  bmad:
+    personas:
+      - name: dev
+        file: .bmad-core/agents/dev.md
+        focus: infrastructure
+  ralph:
+    use_cases:
+      - pipeline-setup
+      - deployment
+    completion_promise: PIPELINE_WORKING
+  superpowers:
+    skills:
+      - devops/cicd-pipeline
+      - devops/containerization
+      - devops/infrastructure-as-code
+      - devops/deployment-strategy
+      - devops/environment-configuration
+      - devops/database-operations
+      - devops/monitoring-setup
+      - devops/log-management
+      - devops/auto-scaling
+      - devops/load-balancing
+      - devops/ssl-management
+      - devops/backup-recovery
+      - devops/performance-tuning
+      - devops/cost-optimization
+"
+
+    create_file "agents/documentation/agent.yaml" "# Documentation Agent Definition
+agent:
+  id: documentation
+  name: Documentation Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Creates and maintains all documentation including API docs, user guides,
+  runbooks, and architectural documentation.
+
+responsibilities:
+  - api_docs
+  - user_guides
+  - runbooks
+  - architecture_docs
+  - onboarding_docs
+
+frameworks:
+  bmad:
+    personas:
+      - name: analyst
+        file: .bmad-core/agents/analyst.md
+        focus: documentation
+  ralph:
+    use_cases:
+      - documentation-generation
+      - api-doc-update
+    completion_promise: DOCS_COMPLETE
+  superpowers:
+    skills:
+      - documentation/technical-writing
+      - documentation/api-documentation
+      - documentation/code-documentation
+      - documentation/user-guides
+      - documentation/architecture-documentation
+      - documentation/runbook-writing
+      - documentation/changelog-management
+      - documentation/onboarding-documentation
+      - documentation/compliance-documentation
+      - documentation/diagram-creation
+
+cross_cutting_collaborations:
+  - skill: documentation/api-documentation
+    collaborators: [developer, design]
+    reason: API implementation and OpenAPI spec changes require doc updates
+"
+
+    create_file "agents/operations/agent.yaml" "# Operations Agent Definition
+agent:
+  id: operations
+  name: Operations Agent
+  project: ${PROJECT_NAME}
+
+description: |
+  Handles production monitoring, incident response, capacity planning,
+  and operational excellence.
+
+responsibilities:
+  - monitoring
+  - incident_response
+  - performance_analysis
+  - capacity_planning
+  - sla_management
+
+frameworks:
+  bmad:
+    personas: []
+    # No direct BMAD persona - uses dev.md with ops focus when needed
+  ralph:
+    use_cases:
+      - incident-response
+      - performance-analysis
+    completion_promise: INCIDENT_RESOLVED
+  superpowers:
+    skills:
+      - operations/system-monitoring
+      - operations/alerting-management
+      - operations/incident-response
+      - operations/capacity-planning
+      - operations/sla-management
+      - operations/security-monitoring
+      - operations/performance-monitoring
+      - operations/log-analysis
+      - operations/availability-management
+      - operations/change-management
+      - operations/disaster-recovery
+      - operations/reporting
+"
 
     # Create agent protocol
     print_step "Creating agent communication protocol..."
@@ -1249,7 +1756,7 @@ errors=0
 # Check directories
 echo ""
 echo "1. Checking directories..."
-dirs=(".specify" ".bmad" ".ralph" ".sdlc" "agents" "skills" "docs" "config")
+dirs=(".specify" ".bmad" ".bmad-core" ".ralph" ".sdlc" "agents" "skills" "docs" "config")
 for dir in "${dirs[@]}"; do
     if [ -d "$dir" ]; then
         echo "   ✅ $dir exists"
@@ -1259,9 +1766,31 @@ for dir in "${dirs[@]}"; do
     fi
 done
 
+# Check BMAD installation
+echo ""
+echo "2. Checking BMAD installation..."
+if [ -d ".bmad-core/agents" ]; then
+    bmad_agents=$(ls -1 .bmad-core/agents/*.md 2>/dev/null | wc -l)
+    echo "   Found $bmad_agents BMAD agent personas"
+    if [ "$bmad_agents" -ge 8 ]; then
+        echo "   ✅ BMAD agents installed"
+    else
+        echo "   ⚠️  Expected 8+ BMAD agents, found $bmad_agents"
+    fi
+else
+    echo "   ❌ .bmad-core/agents not found - BMAD not installed"
+    ((errors++))
+fi
+
+if [ -f ".bmad-core/install-manifest.yaml" ]; then
+    echo "   ✅ BMAD install manifest found"
+else
+    echo "   ⚠️  BMAD install manifest missing"
+fi
+
 # Check key files
 echo ""
-echo "2. Checking key files..."
+echo "3. Checking key files..."
 files=("CLAUDE.md" ".specify/constitution.md" "config/spec-kit/workflow.yaml" "config/bmad/agent-mapping.yaml" ".ralph/config.yaml" "config/12-factors/factors.yaml")
 for file in "${files[@]}"; do
     if [ -f "$file" ]; then
@@ -1274,7 +1803,7 @@ done
 
 # Check agents
 echo ""
-echo "3. Checking agent definitions..."
+echo "4. Checking agent definitions..."
 agents=("orchestrator" "requirements" "architecture" "design" "test-manager" "developer" "security" "devops" "documentation" "operations")
 for agent in "${agents[@]}"; do
     if [ -d "agents/$agent" ]; then
@@ -1287,7 +1816,7 @@ done
 
 # Check skills
 echo ""
-echo "4. Checking skills..."
+echo "5. Checking skills..."
 skill_count=$(find skills -name "SKILL.md" 2>/dev/null | wc -l)
 echo "   Found $skill_count skill files"
 if [ "$skill_count" -ge 100 ]; then
@@ -1295,6 +1824,50 @@ if [ "$skill_count" -ge 100 ]; then
 else
     echo "   ⚠️  Expected ~116 skills, found $skill_count"
 fi
+
+# Check skill wiring in agents
+echo ""
+echo "6. Checking skill wiring in agents..."
+wired_agents=0
+for agent in "${agents[@]}"; do
+    if [ -f "agents/$agent/agent.yaml" ]; then
+        skill_refs=$(grep -c "skills:" "agents/$agent/agent.yaml" 2>/dev/null || echo "0")
+        skill_lines=$(grep -A 20 "superpowers:" "agents/$agent/agent.yaml" 2>/dev/null | grep -c "      - " || echo "0")
+        if [ "$skill_lines" -gt 0 ]; then
+            echo "   ✅ agents/$agent has $skill_lines skills wired"
+            ((wired_agents++))
+        else
+            echo "   ❌ agents/$agent has no skills wired"
+            ((errors++))
+        fi
+    fi
+done
+if [ "$wired_agents" -eq 10 ]; then
+    echo "   ✅ All agents have skills wired"
+else
+    echo "   ⚠️  Only $wired_agents/10 agents have skills wired"
+fi
+
+# Check BMAD persona wiring in agents
+echo ""
+echo "7. Checking BMAD persona wiring in agents..."
+bmad_wired=0
+for agent in "${agents[@]}"; do
+    if [ -f "agents/$agent/agent.yaml" ]; then
+        if grep -q "personas:" "agents/$agent/agent.yaml" 2>/dev/null; then
+            persona_count=$(grep -A 10 "bmad:" "agents/$agent/agent.yaml" 2>/dev/null | grep -c "file:" || echo "0")
+            if [ "$persona_count" -gt 0 ]; then
+                echo "   ✅ agents/$agent has $persona_count BMAD persona(s) linked"
+                ((bmad_wired++))
+            else
+                echo "   ⚠️  agents/$agent has personas key but no files linked"
+            fi
+        else
+            echo "   ⚠️  agents/$agent uses old bmad.agents format (not personas)"
+        fi
+    fi
+done
+echo "   $bmad_wired/10 agents have BMAD personas wired"
 
 # Summary
 echo ""
@@ -1410,12 +1983,52 @@ This project uses a 10-agent SDLC framework. See [CLAUDE.md](CLAUDE.md) for deta
         git commit -m "docs: add README and finalize project setup" || true
     fi
 
+    print_success "Phase 11 complete!"
+}
+
+phase_12_plugins() {
+    print_phase 12 "Plugin Installation"
+
+    cd "$PROJECT_DIR"
+
+    print_header "Claude Code Plugin Installation"
+
+    echo -e "${BOLD}The following plugins enhance the SDLC framework:${NC}"
+    echo ""
+    echo "  1. ${CYAN}Ralph Wiggum${NC} - Autonomous execution loops"
+    echo "     Commands: /ralph-loop, /cancel-ralph"
+    echo ""
+
+    prompt_manual_step "Install Claude Code Plugins" "
+${BOLD}In Claude Code, run the following commands:${NC}
+
+${CYAN}1. Install Ralph Wiggum Plugin:${NC}
+   /plugin marketplace add https://github.com/anthropics/claude-code
+   /plugin install ralph-wiggum
+
+${CYAN}2. Verify installation:${NC}
+   /help
+
+${BOLD}You should see these commands available:${NC}
+   - /ralph-loop \"<task>\" --max-iterations <n> --completion-promise \"<done>\"
+   - /cancel-ralph
+
+${YELLOW}Note: You may need to restart Claude Code after installation.${NC}
+"
+
     print_header "Setup Complete!"
 
     echo -e "
 ${GREEN}${PROJECT_NAME} SDLC Framework has been set up!${NC}
 
 ${BOLD}Project Location:${NC} ${PROJECT_DIR}
+
+${BOLD}What was configured:${NC}
+  - 10 agents with skills wired (116 total skills)
+  - Spec Kit workflow integration
+  - BMAD agent personas
+  - Ralph Wiggum autonomous loops
+  - 12 Factors enforcement rules
 
 ${BOLD}Next Steps:${NC}
 1. Review and customize CLAUDE.md
@@ -1433,7 +2046,7 @@ ${BOLD}Documentation:${NC}
   - Skills Content: ${SCRIPT_DIR}/all-skills-content.md
 "
 
-    print_success "Phase 11 complete! Happy coding!"
+    print_success "Phase 12 complete! Happy coding!"
 }
 
 # =============================================================================
@@ -1475,13 +2088,14 @@ parse_args() {
                 echo "  2  - Spec Kit Installation"
                 echo "  3  - Obra Superpowers Installation"
                 echo "  4  - BMAD Method Installation"
-                echo "  5  - Ralph Wiggum Plugin Installation"
+                echo "  5  - Ralph Wiggum Configuration"
                 echo "  6  - 12 Factors Integration"
-                echo "  7  - Wiring Your 10 Agents"
+                echo "  7  - Wiring Your 10 Agents (with skills)"
                 echo "  8  - Creating Your 116 Skills"
                 echo "  9  - Orchestrator Configuration"
                 echo "  10 - Testing the Integration"
                 echo "  11 - Production Workflow"
+                echo "  12 - Plugin Installation (final step)"
                 exit 0
                 ;;
             *)
@@ -1523,6 +2137,7 @@ main() {
         "phase_9_orchestrator"
         "phase_10_testing"
         "phase_11_production"
+        "phase_12_plugins"
     )
 
     for i in "${!phases[@]}"; do
@@ -1530,7 +2145,7 @@ main() {
         if [[ $phase_num -ge $START_PHASE ]]; then
             ${phases[$i]}
 
-            if [[ $phase_num -lt 11 ]]; then
+            if [[ $phase_num -lt 12 ]]; then
                 if ! prompt_yes_no "Continue to next phase?"; then
                     print_info "Setup paused at phase $phase_num"
                     print_info "Resume with: $0 --phase $((phase_num + 1))"

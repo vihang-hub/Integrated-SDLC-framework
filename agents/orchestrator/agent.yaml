@@ -2,15 +2,48 @@
 agent:
   id: orchestrator
   name: Orchestrator Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Coordinates the complete SDLC workflow across all 10 agents, managing phase
+  transitions, enforcing gate validations, and ensuring smooth project progression.
+
+responsibilities:
+  - workflow_management
+  - task_coordination
+  - gate_validation
+  - conflict_resolution
+  - priority_management
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - orchestrator
+      - scrum-master
   ralph:
-    use_cases: []
+    use_cases:
+      - workflow-coordination
+      - gate-validation
+    completion_promise: COORDINATION_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - orchestration/workflow-management
+      - orchestration/task-decomposition
+      - orchestration/progress-tracking
+      - orchestration/gate-validation
+      - orchestration/conflict-resolution
+      - orchestration/priority-management
+      - orchestration/communication-routing
+      - orchestration/risk-assessment
 
-# See implementation guide for full configuration
-
+delegation:
+  requirements: requirements-agent
+  architecture: architecture-agent
+  design: design-agent
+  test_design: test-manager-agent
+  implementation: developer-agent
+  testing: test-manager-agent
+  security: security-agent
+  deployment: devops-agent
+  documentation: documentation-agent
+  operations: operations-agent

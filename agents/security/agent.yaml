@@ -2,15 +2,50 @@
 agent:
   id: security
   name: Security Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Ensures security compliance, performs threat modeling, vulnerability scanning,
+  and security reviews for the StudyAbroad platform (GDPR, FERPA aware).
+
+responsibilities:
+  - security_review
+  - threat_modeling
+  - compliance_checking
+  - vulnerability_scanning
+  - incident_analysis
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - security-expert
   ralph:
-    use_cases: []
+    use_cases:
+      - security-audit
+      - threat-modeling
+    completion_promise: SECURITY_CLEAN
   superpowers:
-    skills: []
+    skills:
+      - security/security-architecture-review
+      - security/threat-modeling
+      - security/vulnerability-scanning
+      - security/dependency-auditing
+      - security/code-security-review
+      - security/authentication-testing
+      - security/authorization-testing
+      - security/input-validation-testing
+      - security/security-configuration
+      - security/compliance-checking
+      - security/penetration-testing
+      - security/security-reporting
+      - security/incident-analysis
 
-# See implementation guide for full configuration
+cross_cutting_collaborations:
+  - skill: security/code-security-review
+    collaborators: [developer]
+    reason: Security guidance during auth/data handling implementation
 
+compliance:
+  - GDPR
+  - FERPA
+  - OWASP-Top-10

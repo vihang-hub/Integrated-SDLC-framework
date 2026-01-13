@@ -2,15 +2,52 @@
 agent:
   id: developer
   name: Developer Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Implements features, writes tests, performs code reviews, and handles
+  all development tasks for the StudyAbroad platform.
+
+responsibilities:
+  - code_implementation
+  - unit_testing
+  - code_review
+  - bug_fixing
+  - refactoring
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - developer
+      - frontend-developer
+      - backend-developer
   ralph:
-    use_cases: []
+    use_cases:
+      - tdd-implementation
+      - bug-fix
+      - feature-development
+    completion_promise: IMPLEMENTATION_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - development/code-implementation
+      - development/unit-testing
+      - development/api-implementation
+      - development/database-integration
+      - development/frontend-development
+      - development/authentication
+      - development/integration-implementation
+      - development/error-handling
+      - development/refactoring
+      - development/bug-fixing
+      - development/code-review
+      - development/code-documentation
+      - development/migration-writing
+      - development/performance-optimization
 
-# See implementation guide for full configuration
-
+cross_cutting_collaborations:
+  - skill: development/code-review
+    collaborators: [security, architecture]
+    reason: Security and architectural compliance reviews
+  - skill: development/code-documentation
+    collaborators: [documentation]
+    reason: Generate API docs from code comments

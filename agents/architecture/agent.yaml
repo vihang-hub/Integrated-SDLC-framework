@@ -2,15 +2,44 @@
 agent:
   id: architecture
   name: Architecture Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Designs system architecture, makes technology decisions, and documents
+  architectural decisions through ADRs for the StudyAbroad platform.
+
+responsibilities:
+  - system_design
+  - technology_selection
+  - adr_writing
+  - database_design
+  - api_architecture
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - architect
   ralph:
-    use_cases: []
+    use_cases:
+      - architecture-design
+      - technology-evaluation
+    completion_promise: ARCHITECTURE_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - architecture/architecture-pattern-selection
+      - architecture/technology-evaluation
+      - architecture/database-design
+      - architecture/api-architecture
+      - architecture/infrastructure-design
+      - architecture/security-architecture
+      - architecture/scalability-planning
+      - architecture/integration-architecture
+      - architecture/cost-estimation
+      - architecture/adr-writing
+      - architecture/diagram-generation
+      - architecture/environment-design
 
-# See implementation guide for full configuration
-
+cross_cutting_collaborations:
+  - skill: architecture/adr-writing
+    collaborators: [developer, security]
+    reason: Implementation and security decisions need formal ADR documentation

@@ -2,15 +2,38 @@
 agent:
   id: operations
   name: Operations Agent
-  project: ${PROJECT_NAME}
+  project: studyabroad-v2
+
+description: |
+  Handles production monitoring, incident response, capacity planning,
+  and operational excellence for the StudyAbroad platform.
+
+responsibilities:
+  - monitoring
+  - incident_response
+  - performance_analysis
+  - capacity_planning
+  - sla_management
 
 frameworks:
   bmad:
     agents: []
   ralph:
-    use_cases: []
+    use_cases:
+      - incident-response
+      - performance-analysis
+    completion_promise: INCIDENT_RESOLVED
   superpowers:
-    skills: []
-
-# See implementation guide for full configuration
-
+    skills:
+      - operations/system-monitoring
+      - operations/alerting-management
+      - operations/incident-response
+      - operations/capacity-planning
+      - operations/sla-management
+      - operations/security-monitoring
+      - operations/performance-monitoring
+      - operations/log-analysis
+      - operations/availability-management
+      - operations/change-management
+      - operations/disaster-recovery
+      - operations/reporting

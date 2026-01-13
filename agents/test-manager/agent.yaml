@@ -1,16 +1,49 @@
-# Test-manager Agent Definition
+# Test Manager Agent Definition
 agent:
   id: test-manager
-  name: Test-manager Agent
-  project: ${PROJECT_NAME}
+  name: Test Manager Agent
+  project: studyabroad-v2
+
+description: |
+  Manages test strategy, test case design, coverage analysis, and quality
+  assurance for the StudyAbroad platform.
+
+responsibilities:
+  - test_strategy
+  - test_case_design
+  - coverage_analysis
+  - defect_analysis
+  - regression_management
 
 frameworks:
   bmad:
-    agents: []
+    agents:
+      - qa-tester
   ralph:
-    use_cases: []
+    use_cases:
+      - test-design
+      - coverage-analysis
+    completion_promise: TESTS_COMPLETE
   superpowers:
-    skills: []
+    skills:
+      - testing/test-strategy
+      - testing/test-case-design
+      - testing/test-data
+      - testing/coverage-analysis
+      - testing/traceability-management
+      - testing/impact-analysis
+      - testing/prioritization
+      - testing/defect-analysis
+      - testing/reporting
+      - testing/regression-management
+      - testing/environment-management
+      - testing/performance-test
+      - testing/security-test
 
-# See implementation guide for full configuration
-
+cross_cutting_collaborations:
+  - skill: testing/traceability-management
+    collaborators: [requirements]
+    reason: Verify requirement coverage and update traceability matrix
+  - skill: testing/impact-analysis
+    collaborators: [requirements, developer]
+    reason: Assess test impacts from requirement or code changes
