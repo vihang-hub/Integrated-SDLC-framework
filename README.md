@@ -1,4 +1,4 @@
-# StudyAbroad SDLC Framework
+# Integrated SDLC Framework
 
 A **10-agent SDLC framework** with 116 skills for AI-assisted software development.
 
@@ -6,8 +6,8 @@ A **10-agent SDLC framework** with 116 skills for AI-assisted software developme
 
 ```bash
 # Clone the repository
-git clone https://github.com/vihang-hub/studyabroad-framework.git
-cd studyabroad-framework
+git clone https://github.com/vihang-hub/Integrated-SDLC-framework.git
+cd Integrated-SDLC-framework
 
 # Run the setup script (12 phases)
 ./setup-sdlc-framework.sh
