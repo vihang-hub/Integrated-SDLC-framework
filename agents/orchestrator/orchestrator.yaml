@@ -1,0 +1,51 @@
+# Orchestrator Main Configuration
+
+orchestrator:
+  project: ${PROJECT_NAME}
+
+workflow:
+  phases:
+    - requirements
+    - architecture
+    - design
+    - test_design
+    - implementation
+    - testing
+    - security_review
+    - deployment
+    - operations
+
+gates:
+  requirements:
+    required:
+      - spec_document_exists
+      - acceptance_criteria_defined
+      - user_journeys_mapped
+    approver: human
+
+  architecture:
+    required:
+      - architecture_document_exists
+      - adrs_written
+      - database_schema_defined
+    approver: human
+
+  implementation:
+    required:
+      - all_tests_pass
+      - coverage_minimum_met
+      - code_review_approved
+    approver: developer
+
+delegation:
+  requirements: requirements-agent
+  architecture: architecture-agent
+  design: design-agent
+  test_design: test-manager-agent
+  implementation: developer-agent
+  testing: test-manager-agent
+  security: security-agent
+  deployment: devops-agent
+  documentation: documentation-agent
+  operations: operations-agent
+
