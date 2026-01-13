@@ -1,0 +1,16 @@
+# Operations Agent Definition
+agent:
+  id: operations
+  name: Operations Agent
+  project: ${PROJECT_NAME}
+
+frameworks:
+  bmad:
+    agents: []
+  ralph:
+    use_cases: []
+  superpowers:
+    skills: []
+
+# See implementation guide for full configuration
+

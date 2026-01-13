@@ -1,0 +1,16 @@
+# Test-manager Agent Definition
+agent:
+  id: test-manager
+  name: Test-manager Agent
+  project: ${PROJECT_NAME}
+
+frameworks:
+  bmad:
+    agents: []
+  ralph:
+    use_cases: []
+  superpowers:
+    skills: []
+
+# See implementation guide for full configuration
+
