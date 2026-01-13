@@ -1,0 +1,40 @@
+# 12 Factors Enforcement Rules
+# Project: studyabroad-v2
+
+enforcement_rules:
+  rule_no_code_without_spec:
+    factor: 1
+    trigger: implementation_start
+    condition: '!exists(.specify/spec.md)'
+    action: block
+    message: 'Factor 1 violation: Cannot start implementation without approved specification'
+
+  rule_constitution_required:
+    factor: 2
+    trigger: project_init
+    condition: '!exists(.specify/constitution.md)'
+    action: warn
+    message: 'Factor 2: Constitution not defined'
+
+  rule_gate_validation:
+    factor: 6
+    trigger: phase_transition
+    condition: '!gate_validation_passed'
+    action: block
+    message: 'Factor 6 violation: Gate validation failed'
+
+  rule_traceability_required:
+    factor: 9
+    trigger: pull_request
+    condition: '!has_requirement_reference'
+    action: warn
+    message: 'Factor 9: PR should reference requirement ID'
+
+  rule_security_review:
+    factor: 11
+    trigger: code_change
+    condition: changes_auth_code || changes_data_handling
+    action: require_approval
+    approver: security-agent
+    message: 'Factor 11: Security review required'
+

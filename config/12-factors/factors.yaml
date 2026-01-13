@@ -1,0 +1,72 @@
+# Agentic SDLC 12 Factors Configuration
+# Project: studyabroad-v2
+
+project:
+  name: ${PROJECT_NAME}
+  compliance:
+    - GDPR
+    - WCAG-2.1-AA
+
+factors:
+  factor_1_strategic_mindset:
+    description: Intent-driven development with clear specifications
+    enforcement:
+      - Orchestrator blocks implementation without spec
+      - Gate validation checks for specification artifacts
+
+  factor_2_context_scaffolding:
+    description: Rich organizational principles and guardrails
+    artifacts:
+      - .specify/constitution.md
+      - CLAUDE.md
+      - skills/*/SKILL.md
+
+  factor_3_mission_definition:
+    description: Structured specification creation process
+    workflow: Elicit -> Structure -> Validate -> Approve
+
+  factor_4_structured_planning:
+    description: Multi-step refinement with technical planning
+    artifacts:
+      - docs/architecture/architecture.md
+      - docs/architecture/adrs/
+
+  factor_5_dual_execution_loops:
+    description: SYNC/ASYNC execution modes
+    sync_mode:
+      - Human-in-loop decisions
+      - Gate approvals
+    async_mode:
+      - Parallel task execution
+      - Automated testing
+
+  factor_6_the_great_filter:
+    description: Quality gates and validation checkpoints
+    gates:
+      - requirements_complete
+      - architecture_approved
+      - design_validated
+      - tests_designed
+      - implementation_complete
+      - all_tests_pass
+      - security_approved
+      - deployment_ready
+
+  factor_7_adaptive_quality_gates:
+    description: Flexible QA based on risk level
+
+  factor_8_ai_augmented_testing:
+    description: Risk-based intelligent testing
+
+  factor_9_traceability:
+    description: End-to-end artifact traceability
+
+  factor_10_continuous_feedback:
+    description: Production reality informs specification evolution
+
+  factor_11_security_by_design:
+    description: Built-in security practices
+
+  factor_12_team_capability:
+    description: Knowledge sharing and continuous improvement
+
