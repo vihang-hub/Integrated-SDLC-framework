@@ -1,0 +1,59 @@
+# Ralph Wiggum Configuration for studyabroad-v2
+
+project:
+  name: studyabroad-v2
+
+defaults:
+  max_iterations: 50
+  completion_detection: promise
+
+agent_loops:
+  orchestrator:
+    typical_iterations: 10-20
+    completion_promise: COORDINATION_COMPLETE
+
+  requirements:
+    typical_iterations: 15-30
+    completion_promise: REQUIREMENTS_COMPLETE
+
+  architecture:
+    typical_iterations: 10-25
+    completion_promise: ARCHITECTURE_COMPLETE
+
+  design:
+    typical_iterations: 15-30
+    completion_promise: DESIGN_COMPLETE
+
+  test_manager:
+    typical_iterations: 20-40
+    completion_promise: TESTS_COMPLETE
+
+  developer:
+    typical_iterations: 30-50
+    completion_promise: IMPLEMENTATION_COMPLETE
+
+  security:
+    typical_iterations: 20-40
+    completion_promise: SECURITY_CLEAN
+
+  devops:
+    typical_iterations: 15-30
+    completion_promise: PIPELINE_WORKING
+
+  documentation:
+    typical_iterations: 10-25
+    completion_promise: DOCS_COMPLETE
+
+  operations:
+    typical_iterations: 20-50
+    completion_promise: INCIDENT_RESOLVED
+
+safety:
+  absolute_max_iterations: 100
+  cost_warning_threshold: 50
+  require_confirmation_above: 75
+
+logging:
+  log_all_iterations: true
+  log_directory: .sdlc/ralph-logs/
+
